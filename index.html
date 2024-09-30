@@ -4,15 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gombuls Game</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
 </head>
 <body>
-    <h1>Добро пожаловать в игру Gombuls!</h1>
-    <img id="clickableImage" src="gmbls.png" alt="Кликни на картинку" style="cursor: pointer; width: 300px;">
-    <p id="score">Очки: 0</p>
+    <h1>Добро пожаловать в Gombuls!</h1>
+    <img id="yourImageId" src="your-image-url.jpg" alt="Изображение" style="cursor: pointer;">
 
-    <script src="script.js"></script>
+    <script>
+        function addPoints(userId) {
+            fetch(`https://api.telegram.org/bot7783242299:AAEXLgZXRQij-uCLlZMCMeA0cYMoCt_KvDU/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: userId,
+                    text: '/update_points'
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Получите userId из URL-параметров
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id'); // Предполагается, что user_id передается в URL
+
+        // Пример вызова функции при нажатии на изображение
+        document.getElementById('yourImageId').onclick = function() {
+            addPoints(userId);
+        };
+    </script>
 </body>
 </html>
