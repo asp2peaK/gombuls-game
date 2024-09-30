@@ -19,7 +19,7 @@ const database = getDatabase(app);
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get('user_id');
 
-// Загружаем очки пользователя из базы данных
+// Загружаем текущие очки пользователя
 get(ref(database, 'users/' + userId)).then((snapshot) => {
     if (snapshot.exists()) {
         const userData = snapshot.val();
@@ -27,7 +27,7 @@ get(ref(database, 'users/' + userId)).then((snapshot) => {
     }
 });
 
-// Функция добавления очков
+// Функция для добавления очков
 function addPoints(points) {
     const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
 
@@ -38,11 +38,12 @@ function addPoints(points) {
         points: newScore
     });
 
-    // Обновляем отображение очков на странице
+    // Обновляем очки на странице
     document.getElementById('score').innerText = `Очки: ${newScore}`;
 }
 
-// Убираем стандартное поведение двойного клика
+// Убираем двойной клик
 document.getElementById('gmblsImage').addEventListener('dblclick', (e) => {
     e.preventDefault();
 });
+
