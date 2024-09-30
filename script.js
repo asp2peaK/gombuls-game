@@ -31,6 +31,16 @@ if (window.Telegram.WebApp) {
         if (snapshot.exists()) {
             const userData = snapshot.val();
             document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+        } else {
+            console.warn('Пользователь не найден. Создаем нового пользователя.');
+            // Если пользователь не найден, создаем нового с 0 очками
+            set(ref(database, 'users/' + userId), {
+                points: 0
+            }).then(() => {
+                document.getElementById('score').innerText = `Очки: 0`;
+            }).catch((error) => {
+                console.error('Ошибка создания пользователя в Firebase:', error);
+            });
         }
     }).catch((error) => {
         console.error('Ошибка загрузки данных из Firebase:', error);
@@ -38,8 +48,8 @@ if (window.Telegram.WebApp) {
 
     // Функция для добавления очков
     function addPoints(points) {
-        const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
-
+        const currentScoreText = document.getElementById('score').innerText;
+        const currentScore = parseInt(currentScoreText.split(' ')[1]);
         const newScore = currentScore + points;
 
         // Обновляем очки в базе данных
@@ -48,6 +58,7 @@ if (window.Telegram.WebApp) {
         }).then(() => {
             // Обновляем очки на странице
             document.getElementById('score').innerText = `Очки: ${newScore}`;
+            console.log('Очки успешно обновлены:', newScore);
         }).catch((error) => {
             console.error('Ошибка обновления очков в Firebase:', error);
         });
@@ -56,7 +67,7 @@ if (window.Telegram.WebApp) {
     // Добавляем обработчик клика на изображение
     document.getElementById('gmblsImage').addEventListener('click', function() {
         addPoints(1);
-        console.log('Клик засчитан, очки прибавлены.');
+        console.log('Клик по изображению засчитан, очки прибавлены.');
     });
 
     // Убираем двойной клик
@@ -64,7 +75,7 @@ if (window.Telegram.WebApp) {
         e.preventDefault();
     });
 
-    // Используем основную кнопку Telegram для отладки (можно убрать после)
+    // Используем основную кнопку Telegram для отладки
     tg.MainButton.text = "Прибавить очки";
     tg.MainButton.show();
     tg.MainButton.onClick(() => {
