@@ -46,8 +46,8 @@ if (userId) {
         });
     }
 
-    // Обработка клика по кнопке
-    document.getElementById('add-points-btn').addEventListener('click', () => addPoints(1));
+    // Обработка клика по изображению
+    document.getElementById('gombuls-img').addEventListener('click', () => addPoints(1));
 } else {
     console.error("User ID not found in URL");
 }
