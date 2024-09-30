@@ -4,59 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GOMBULS Game</title>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js"></script>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        #gameArea {
-            width: 200px;
-            height: 200px;
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 24px;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="script.js" defer></script>
 </head>
 <body>
     <div id="gameArea">0</div>
-
-    <script type="module">
-        // Инициализация Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcYnnQ98fkM_lB8T0GqyHa-re2iT4yaoU",
-            authDomain: "gombuls-game.firebaseapp.com",
-            databaseURL: "https://gombuls-game-default-rtdb.europe-west1.firebasedatabase.app/",
-            projectId: "gombuls-game",
-            storageBucket: "gombuls-game.appspot.com",
-            messagingSenderId: "310691283889",
-            appId: "1:310691283889:web:4165ce19c145bf83c87390",
-            measurementId: "G-QGQ2LJGSJF"
-        };
-
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        const gameArea = document.getElementById("gameArea");
-        let score = 0;
-
-        gameArea.addEventListener("click", () => {
-            score++;
-            gameArea.textContent = score;
-
-            // Сохранение очков в базе данных
-            const userId = 'YOUR_USER_ID'; // Замените на ID пользователя из Telegram
-            database.ref(`users/${userId}/points`).set(score);
-        });
-    </script>
 </body>
 </html>
