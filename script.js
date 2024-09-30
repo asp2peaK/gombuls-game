@@ -18,26 +18,36 @@ const database = getDatabase(app);
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get('user_id');
 
-// Загружаем очки пользователя
-get(ref(database, 'users/' + userId)).then((snapshot) => {
-    if (snapshot.exists()) {
-        const userData = snapshot.val();
-        document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
-    }
-});
-
-// Функция добавления очков
-function addPoints(points) {
-    const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
-    const newPoints = currentScore + points;
-
-    // Обновляем очки в базе данных
-    set(ref(database, 'users/' + userId), {
-        points: newPoints
+if (userId) {
+    // Загружаем очки пользователя
+    get(ref(database, 'users/' + userId)).then((snapshot) => {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+        } else {
+            console.log("No data available for this user.");
+        }
+    }).catch((error) => {
+        console.error("Error loading user data: ", error);
     });
 
-    document.getElementById('score').innerText = `Очки: ${newPoints}`;
-}
+    // Функция добавления очков
+    function addPoints(points) {
+        const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]) || 0;
+        const newPoints = currentScore + points;
 
-// Обработка клика по кнопке
-document.getElementById('add-points-btn').addEventListener('click', () => addPoints(1));
+        // Обновляем очки в базе данных
+        set(ref(database, 'users/' + userId), {
+            points: newPoints
+        }).then(() => {
+            document.getElementById('score').innerText = `Очки: ${newPoints}`;
+        }).catch((error) => {
+            console.error("Error updating score: ", error);
+        });
+    }
+
+    // Обработка клика по кнопке
+    document.getElementById('add-points-btn').addEventListener('click', () => addPoints(1));
+} else {
+    console.error("User ID not found in URL");
+}
