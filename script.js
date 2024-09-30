@@ -1,6 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-
+// Инициализация Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBcYnnQ98fkM_lB8T0GqyHa-re2iT4yaoU",
     authDomain: "gombuls-game.firebaseapp.com",
@@ -10,78 +8,44 @@ const firebaseConfig = {
     appId: "1:310691283889:web:4165ce19c145bf83c87390",
     measurementId: "G-QGQ2LJGSJF"
 };
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-// Инициализация Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+// Переменные
+let score = 0;
+const userId = "USER_ID"; // Здесь нужно будет заменить на ID текущего пользователя
 
-// Получаем ID пользователя из URL
-const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get('user_id');
-
-// Проверяем, запущено ли приложение внутри Telegram Web App
-if (window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-
-    // Инициализируем Web App
-    tg.ready();
-
-    // Загружаем текущие очки пользователя
-    get(ref(database, 'users/' + userId)).then((snapshot) => {
-        if (snapshot.exists()) {
-            const userData = snapshot.val();
-            document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+// Функция для загрузки очков из Firebase при загрузке страницы
+function loadScore() {
+    db.collection("users").doc(userId).get().then((doc) => {
+        if (doc.exists) {
+            score = doc.data().balance;
+            document.getElementById('score').innerText = 'Очки: ' + score;
         } else {
-            console.warn('Пользователь не найден. Создаем нового пользователя.');
-            // Если пользователь не найден, создаем нового с 0 очками
-            set(ref(database, 'users/' + userId), {
-                points: 0
-            }).then(() => {
-                document.getElementById('score').innerText = `Очки: 0`;
-            }).catch((error) => {
-                console.error('Ошибка создания пользователя в Firebase:', error);
-            });
+            console.log("Пользователь не найден!");
         }
     }).catch((error) => {
-        console.error('Ошибка загрузки данных из Firebase:', error);
+        console.error("Ошибка загрузки данных:", error);
     });
-
-    // Функция для добавления очков
-    function addPoints(points) {
-        const currentScoreText = document.getElementById('score').innerText;
-        const currentScore = parseInt(currentScoreText.split(' ')[1]);
-        const newScore = currentScore + points;
-
-        // Обновляем очки в базе данных
-        set(ref(database, 'users/' + userId), {
-            points: newScore
-        }).then(() => {
-            // Обновляем очки на странице
-            document.getElementById('score').innerText = `Очки: ${newScore}`;
-            console.log('Очки успешно обновлены:', newScore);
-        }).catch((error) => {
-            console.error('Ошибка обновления очков в Firebase:', error);
-        });
-    }
-
-    // Добавляем обработчик клика на изображение
-    document.getElementById('gmblsImage').addEventListener('click', function() {
-        addPoints(1);
-        console.log('Клик по изображению засчитан, очки прибавлены.');
-    });
-
-    // Убираем двойной клик
-    document.getElementById('gmblsImage').addEventListener('dblclick', (e) => {
-        e.preventDefault();
-    });
-
-    // Используем основную кнопку Telegram для отладки
-    tg.MainButton.text = "Прибавить очки";
-    tg.MainButton.show();
-    tg.MainButton.onClick(() => {
-        addPoints(1);
-    });
-
-} else {
-    console.log('Приложение запущено вне Telegram Web App.');
 }
+
+// Функция для сохранения очков в Firebase
+function saveScore() {
+    db.collection("users").doc(userId).update({
+        balance: score
+    }).then(() => {
+        console.log("Очки успешно сохранены!");
+    }).catch((error) => {
+        console.error("Ошибка сохранения данных:", error);
+    });
+}
+
+// Обработчик нажатия на картинку
+document.getElementById('clickableImage').addEventListener('click', () => {
+    score++;
+    document.getElementById('score').innerText = 'Очки: ' + score;
+    saveScore();
+});
+
+// Загрузка очков при загрузке страницы
+window.onload = loadScore;
