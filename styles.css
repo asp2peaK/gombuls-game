@@ -1,4 +1,3 @@
-/* Стили для основного контейнера игры */
 #game-container {
     display: flex;
     flex-direction: column;
@@ -9,19 +8,13 @@
     margin: 0;
 }
 
-/* Стили для кнопки */
-#add-points-btn {
-    padding: 20px 40px;
-    font-size: 1.2em;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 10px;
+#gombuls-img {
+    width: 200px;
+    height: auto;
     cursor: pointer;
     user-select: none;
 }
 
-/* Стили для текста с очками */
 #score {
     margin-top: 20px;
     font-size: 1.5em;
