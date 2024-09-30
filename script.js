@@ -42,8 +42,13 @@ function addPoints(points) {
     document.getElementById('score').innerText = `Очки: ${newScore}`;
 }
 
+// Добавляем обработчик клика на изображение
+document.getElementById('gmblsImage').addEventListener('click', function() {
+    addPoints(1);
+    console.log('Клик засчитан, очки прибавлены.');
+});
+
 // Убираем двойной клик
 document.getElementById('gmblsImage').addEventListener('dblclick', (e) => {
     e.preventDefault();
 });
-
