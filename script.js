@@ -1,11 +1,10 @@
-// Инициализация Firebase
+// script.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBcYnnQ98fkM_lB8T0GqyHa-re2iT4yaoU",
     authDomain: "gombuls-game.firebaseapp.com",
-    databaseURL: "https://gombuls-game-default-rtdb.europe-west1.firebasedatabase.app/",
     projectId: "gombuls-game",
     storageBucket: "gombuls-game.appspot.com",
     messagingSenderId: "310691283889",
@@ -16,23 +15,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-const gameArea = document.getElementById("gameArea");
-let score = 0;
-
-// Получение ID пользователя из URL
+// Получаем ID пользователя из URL
 const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get('user_id'); // Ожидается, что ID пользователя будет передан в URL
+const userId = urlParams.get('user_id');
 
-gameArea.addEventListener("click", () => {
-    score++;
-    gameArea.textContent = score;
-
-    // Сохранение очков в базе данных
-    set(ref(database, `users/${userId}/points`), score)
-        .then(() => {
-            console.log("Score saved successfully.");
-        })
-        .catch((error) => {
-            console.error("Error saving score:", error);
-        });
+// Загружаем очки пользователя
+get(ref(database, 'users/' + userId)).then((snapshot) => {
+    if (snapshot.exists()) {
+        const userData = snapshot.val();
+        document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+    }
 });
+
+// Функция добавления очков
+function addPoints(points) {
+    const newPoints = parseInt(document.getElementById('score').innerText.split(' ')[1]) + points;
+
+    // Обновляем очки в базе данных
+    set(ref(database, 'users/' + userId), {
+        points: newPoints
+    });
+
+    document.getElementById('score').innerText = `Очки: ${newPoints}`;
+}
