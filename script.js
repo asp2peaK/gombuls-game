@@ -1,7 +1,7 @@
-// script.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
+// Конфигурация Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBcYnnQ98fkM_lB8T0GqyHa-re2iT4yaoU",
     authDomain: "gombuls-game.firebaseapp.com",
@@ -12,6 +12,7 @@ const firebaseConfig = {
     measurementId: "G-QGQ2LJGSJF"
 };
 
+// Инициализация Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
@@ -24,12 +25,19 @@ get(ref(database, 'users/' + userId)).then((snapshot) => {
     if (snapshot.exists()) {
         const userData = snapshot.val();
         document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+    } else {
+        // Если данных нет, создаем нового пользователя с 0 очками
+        set(ref(database, 'users/' + userId), {
+            points: 0
+        });
+        document.getElementById('score').innerText = `Очки: 0`;
     }
 });
 
 // Функция добавления очков
 function addPoints(points) {
-    const newPoints = parseInt(document.getElementById('score').innerText.split(' ')[1]) + points;
+    const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
+    const newPoints = currentScore + points;
 
     // Обновляем очки в базе данных
     set(ref(database, 'users/' + userId), {
@@ -38,3 +46,6 @@ function addPoints(points) {
 
     document.getElementById('score').innerText = `Очки: ${newPoints}`;
 }
+
+// Привязываем функцию к квадрату
+document.getElementById('square').onclick = () => addPoints(1);
