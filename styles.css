@@ -1,0 +1,21 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+
+#gameArea {
+    width: 200px;
+    height: 200px;
+    background-color: black;
+    display: flex;
+    justify-content: flex-start; /* Выравнивание по левому краю */
+    align-items: flex-start; /* Выравнивание по верхнему краю */
+    cursor: pointer;
+    font-size: 24px;
+    color: white;
+    padding: 10px; /* Отступ для текста */
+}
