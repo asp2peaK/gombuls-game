@@ -1,4 +1,4 @@
-/* Убираем приближение при двойном клике */
+/* Убираем приближение при двойном клике и делаем страницу отзывчивой */
 html, body {
     touch-action: manipulation;
     user-select: none;
@@ -16,7 +16,7 @@ html, body {
 }
 
 img {
-    width: 200px; /* Изменяй размер в зависимости от желаемого размера изображения */
+    width: 200px; /* Изменить при необходимости */
     height: auto;
     cursor: pointer;
     display: block;
