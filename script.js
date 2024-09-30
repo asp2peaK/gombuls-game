@@ -11,6 +11,7 @@ const firebaseConfig = {
     measurementId: "G-QGQ2LJGSJF"
 };
 
+// Инициализация Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
@@ -18,36 +19,30 @@ const database = getDatabase(app);
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get('user_id');
 
-if (userId) {
-    // Загружаем очки пользователя
-    get(ref(database, 'users/' + userId)).then((snapshot) => {
-        if (snapshot.exists()) {
-            const userData = snapshot.val();
-            document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
-        } else {
-            console.log("No data available for this user.");
-        }
-    }).catch((error) => {
-        console.error("Error loading user data: ", error);
+// Загружаем очки пользователя из базы данных
+get(ref(database, 'users/' + userId)).then((snapshot) => {
+    if (snapshot.exists()) {
+        const userData = snapshot.val();
+        document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+    }
+});
+
+// Функция добавления очков
+function addPoints(points) {
+    const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
+
+    const newScore = currentScore + points;
+
+    // Обновляем очки в базе данных
+    set(ref(database, 'users/' + userId), {
+        points: newScore
     });
 
-    // Функция добавления очков
-    function addPoints(points) {
-        const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]) || 0;
-        const newPoints = currentScore + points;
-
-        // Обновляем очки в базе данных
-        set(ref(database, 'users/' + userId), {
-            points: newPoints
-        }).then(() => {
-            document.getElementById('score').innerText = `Очки: ${newPoints}`;
-        }).catch((error) => {
-            console.error("Error updating score: ", error);
-        });
-    }
-
-    // Обработка клика по изображению
-    document.getElementById('gombuls-img').addEventListener('click', () => addPoints(1));
-} else {
-    console.error("User ID not found in URL");
+    // Обновляем отображение очков на странице
+    document.getElementById('score').innerText = `Очки: ${newScore}`;
 }
+
+// Убираем стандартное поведение двойного клика
+document.getElementById('gmblsImage').addEventListener('dblclick', (e) => {
+    e.preventDefault();
+});
