@@ -17,18 +17,16 @@
     margin-bottom: 20px;
 }
 
-/* Стили для квадрата */
-#square {
-    width: 150px;
-    height: 150px;
-    background-color: #3498db; /* Синий цвет */
+/* Стили для кнопки */
+#add-points-btn {
+    padding: 20px 40px;
+    font-size: 1.2em;
+    background-color: #3498db;
+    color: white;
+    border: none;
     border-radius: 10px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     user-select: none;
-    touch-action: none;
 }
 
 /* Стили для текста с очками */
