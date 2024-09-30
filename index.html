@@ -1,13 +1,44 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOMBULS Game</title>
+    <title>Gombuls Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #square {
+            width: 100px;
+            height: 100px;
+            background-color: black;
+        }
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>Добро пожаловать в GOMBULS!</h1>
-    <p>Здесь будет ваше веб-приложение.</p>
-    <!-- Добавьте сюда свой код для игры -->
+    <div id="score">Очки: 0</div>
+    <div id="square"></div>
+
+    <script>
+        let score = 0;
+        const square = document.getElementById('square');
+        const scoreDisplay = document.getElementById('score');
+
+        square.addEventListener('click', () => {
+            score++;
+            scoreDisplay.textContent = `Очки: ${score}`;
+        });
+    </script>
 </body>
 </html>
