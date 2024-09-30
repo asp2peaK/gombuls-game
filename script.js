@@ -39,5 +39,5 @@ function addPoints(points) {
     document.getElementById('score').innerText = `Очки: ${newPoints}`;
 }
 
-// Обработка кликов
-document.getElementById('square').addEventListener('pointerdown', () => addPoints(1));
+// Обработка клика по кнопке
+document.getElementById('add-points-btn').addEventListener('click', () => addPoints(1));
