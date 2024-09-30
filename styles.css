@@ -21,6 +21,8 @@ img {
     cursor: pointer;
     display: block;
     margin: 0 auto;
+    pointer-events: auto;
+    touch-action: manipulation;  /* Для мобильных устройств */
 }
 
 p {
