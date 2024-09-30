@@ -13,13 +13,13 @@ const db = firebase.firestore();
 
 // Переменные
 let score = 0;
-const userId = "USER_ID"; // Здесь нужно будет заменить на ID текущего пользователя
+const userId = "USER_ID"; // Заменить на ID текущего пользователя
 
 // Функция для загрузки очков из Firebase при загрузке страницы
 function loadScore() {
     db.collection("users").doc(userId).get().then((doc) => {
         if (doc.exists) {
-            score = doc.data().balance;
+            score = doc.data().balance; // Исправлено на balance
             document.getElementById('score').innerText = 'Очки: ' + score;
         } else {
             console.log("Пользователь не найден!");
@@ -32,7 +32,7 @@ function loadScore() {
 // Функция для сохранения очков в Firebase
 function saveScore() {
     db.collection("users").doc(userId).update({
-        balance: score
+        balance: score // Исправлено на balance
     }).then(() => {
         console.log("Очки успешно сохранены!");
     }).catch((error) => {
