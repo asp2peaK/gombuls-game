@@ -19,47 +19,58 @@ const database = getDatabase(app);
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get('user_id');
 
-// Загружаем текущие очки пользователя
-get(ref(database, 'users/' + userId)).then((snapshot) => {
-    if (snapshot.exists()) {
-        const userData = snapshot.val();
-        document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
-    } else {
-        // Если записи нет, установить очки в 0
+// Проверяем, запущено ли приложение внутри Telegram Web App
+if (window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+
+    // Инициализируем Web App
+    tg.ready();
+
+    // Загружаем текущие очки пользователя
+    get(ref(database, 'users/' + userId)).then((snapshot) => {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+        }
+    }).catch((error) => {
+        console.error('Ошибка загрузки данных из Firebase:', error);
+    });
+
+    // Функция для добавления очков
+    function addPoints(points) {
+        const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
+
+        const newScore = currentScore + points;
+
+        // Обновляем очки в базе данных
         set(ref(database, 'users/' + userId), {
-            points: 0
+            points: newScore
+        }).then(() => {
+            // Обновляем очки на странице
+            document.getElementById('score').innerText = `Очки: ${newScore}`;
+        }).catch((error) => {
+            console.error('Ошибка обновления очков в Firebase:', error);
         });
     }
-}).catch((error) => {
-    console.error("Ошибка при загрузке данных:", error);
-});
 
-// Функция для добавления очков
-function addPoints(points) {
-    const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
-    const newScore = currentScore + points;
-
-    // Обновляем очки в базе данных
-    set(ref(database, 'users/' + userId), {
-        points: newScore
-    })
-    .then(() => {
-        // Обновляем очки на странице после успешного сохранения
-        document.getElementById('score').innerText = `Очки: ${newScore}`;
-        console.log('Очки обновлены в базе данных.');
-    })
-    .catch((error) => {
-        console.error("Ошибка при обновлении очков:", error);
+    // Добавляем обработчик клика на изображение
+    document.getElementById('gmblsImage').addEventListener('click', function() {
+        addPoints(1);
+        console.log('Клик засчитан, очки прибавлены.');
     });
+
+    // Убираем двойной клик
+    document.getElementById('gmblsImage').addEventListener('dblclick', (e) => {
+        e.preventDefault();
+    });
+
+    // Используем основную кнопку Telegram для отладки (можно убрать после)
+    tg.MainButton.text = "Прибавить очки";
+    tg.MainButton.show();
+    tg.MainButton.onClick(() => {
+        addPoints(1);
+    });
+
+} else {
+    console.log('Приложение запущено вне Telegram Web App.');
 }
-
-// Добавляем обработчик клика на изображение
-document.getElementById('gmblsImage').addEventListener('click', function() {
-    addPoints(1);
-    console.log('Клик засчитан, очки прибавлены.');
-});
-
-// Убираем двойной клик
-document.getElementById('gmblsImage').addEventListener('dblclick', (e) => {
-    e.preventDefault();
-});
