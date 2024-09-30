@@ -56,9 +56,9 @@ function addPoints(points) {
 }
 
 // Привязываем событие клика к квадрату
-document.getElementById('square').addEventListener('pointerdown', () => addPoints(1));
-//document.getElementById('square').addEventListener('click', () => addPoints(1));
-//document.getElementById('square').addEventListener('touchstart', () => addPoints(1)); 
+//document.getElementById('square').addEventListener('pointerdown', () => addPoints(1));
+document.getElementById('square').addEventListener('click', () => addPoints(1));
+document.getElementById('square').addEventListener('touchstart', () => addPoints(1)); 
 
 
 // Загружаем очки пользователя при загрузке страницы
