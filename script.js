@@ -24,22 +24,33 @@ get(ref(database, 'users/' + userId)).then((snapshot) => {
     if (snapshot.exists()) {
         const userData = snapshot.val();
         document.getElementById('score').innerText = `Очки: ${userData.points || 0}`;
+    } else {
+        // Если записи нет, установить очки в 0
+        set(ref(database, 'users/' + userId), {
+            points: 0
+        });
     }
+}).catch((error) => {
+    console.error("Ошибка при загрузке данных:", error);
 });
 
 // Функция для добавления очков
 function addPoints(points) {
     const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
-
     const newScore = currentScore + points;
 
     // Обновляем очки в базе данных
     set(ref(database, 'users/' + userId), {
         points: newScore
+    })
+    .then(() => {
+        // Обновляем очки на странице после успешного сохранения
+        document.getElementById('score').innerText = `Очки: ${newScore}`;
+        console.log('Очки обновлены в базе данных.');
+    })
+    .catch((error) => {
+        console.error("Ошибка при обновлении очков:", error);
     });
-
-    // Обновляем очки на странице
-    document.getElementById('score').innerText = `Очки: ${newScore}`;
 }
 
 // Добавляем обработчик клика на изображение
