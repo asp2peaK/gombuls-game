@@ -28,7 +28,8 @@ get(ref(database, 'users/' + userId)).then((snapshot) => {
 
 // Функция добавления очков
 function addPoints(points) {
-    const newPoints = parseInt(document.getElementById('score').innerText.split(' ')[1]) + points;
+    const currentScore = parseInt(document.getElementById('score').innerText.split(' ')[1]);
+    const newPoints = currentScore + points;
 
     // Обновляем очки в базе данных
     set(ref(database, 'users/' + userId), {
@@ -38,5 +39,5 @@ function addPoints(points) {
     document.getElementById('score').innerText = `Очки: ${newPoints}`;
 }
 
-// Обработка клика по квадрату
+// Обработка кликов
 document.getElementById('square').addEventListener('pointerdown', () => addPoints(1));
